@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9384FB7C2F4C8C7C00B49BFF /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 9384FB7B2F4C8C7C00B49BFF /* ComposableArchitecture */; };
+		93CFFCCF2F4C8CFF00913A31 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 93CFFCCE2F4C8CFF00913A31 /* Alamofire */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		9384F5322F4C77A100B49BFF /* Prography.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prography.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9384FB7C2F4C8C7C00B49BFF /* ComposableArchitecture in Frameworks */,
+				93CFFCCF2F4C8CFF00913A31 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,8 @@
 			);
 			name = Prography;
 			packageProductDependencies = (
+				9384FB7B2F4C8C7C00B49BFF /* ComposableArchitecture */,
+				93CFFCCE2F4C8CFF00913A31 /* Alamofire */,
 			);
 			productName = Prography;
 			productReference = 9384F5322F4C77A100B49BFF /* Prography.app */;
@@ -94,6 +103,10 @@
 			);
 			mainGroup = 9384F5292F4C77A100B49BFF;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9384FB7A2F4C8C7C00B49BFF /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				93CFFCCD2F4C8CFF00913A31 /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9384F5332F4C77A100B49BFF /* Products */;
 			projectDirPath = "";
@@ -257,6 +270,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
+				INFOPLIST_KEY_CFBundleDisplayName = "프로그라피";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -295,6 +309,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
+				INFOPLIST_KEY_CFBundleDisplayName = "프로그라피";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -344,6 +359,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9384FB7A2F4C8C7C00B49BFF /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.23.2;
+			};
+		};
+		93CFFCCD2F4C8CFF00913A31 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.11.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9384FB7B2F4C8C7C00B49BFF /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9384FB7A2F4C8C7C00B49BFF /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		93CFFCCE2F4C8CFF00913A31 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93CFFCCD2F4C8CFF00913A31 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9384F52A2F4C77A100B49BFF /* Project object */;
 }

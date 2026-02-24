@@ -38,7 +38,7 @@ final class AlamofireSession: NetworkSession {
         var decodedData: T? = nil
         
         if let rawData {
-            decodedData = try NetworkCoder.decoder.decode(
+            decodedData = try NetworkCoder.decode(
                 T.self,
                 from: rawData
             )

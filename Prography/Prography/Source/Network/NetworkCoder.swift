@@ -8,6 +8,15 @@
 import Foundation
 
 enum NetworkCoder {
-    static let encoder = JSONEncoder()
-    static let decoder = JSONDecoder()
+    private static let decoder = JSONDecoder()
+    
+    static func decode<T>(
+        _ type: T.Type,
+        from data: Data
+    ) throws -> T where T : Decodable {
+        try decoder.decode(
+            type,
+            from: data
+        )
+    }
 }

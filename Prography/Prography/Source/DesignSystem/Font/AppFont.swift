@@ -130,7 +130,7 @@ extension AppFont {
 }
 
 extension View {
-    func appfont(
+    func appFont(
         _ appFont: AppFont,
         appColor: AppColor
     ) -> some View {
@@ -141,7 +141,7 @@ extension View {
             .lineSpacing(appFont.lineSpacing)
     }
 
-    func appfont(
+    func appFont(
         _ appFont: AppFont,
         color: Color
     ) -> some View {

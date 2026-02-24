@@ -13,3 +13,7 @@
 - 완료 후 과제 제출 방식에 맞춰 제출합니다
 
 [prography 공식 홈페이지](https://prography.org)
+
+---
+
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Gundy93/11th-assignment?utm_source=oss&utm_medium=github&utm_campaign=Gundy93%2F11th-assignment&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)

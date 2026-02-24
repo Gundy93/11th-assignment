@@ -1,0 +1,59 @@
+# =========================
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================
+# Xcode
+# =========================
+build/
+DerivedData/
+*.xcworkspace/xcuserdata/
+*.xcuserdatad/
+*.xcuserstate
+
+# Xcode 26 User Settings
+*.xccheckout
+*.moved-aside
+*.xcscmblueprint
+
+# SwiftUI Previews
+*.preview-thumbnails/
+
+# =========================
+# Swift Package Manager
+# =========================
+.swiftpm/
+.build/
+
+# If you are NOT committing Package.resolved
+# Comment this line if you want reproducible builds
+Package.resolved
+
+# =========================
+# Archives
+# =========================
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+Secrets.plist
+GoogleService-Info.plist
+
+# =========================
+# Temporary
+# =========================
+*.swp
+*.lock

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public enum AppColor: String {
+enum AppColor: String {
     // Primary
     case primary = "#FA2454"
     case primary20 = "#FFE5EC"

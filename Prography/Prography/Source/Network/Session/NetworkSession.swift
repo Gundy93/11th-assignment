@@ -5,11 +5,11 @@
 //  Created by Jun Young Lee on 2/24/26.
 //
 
-import Alamofire
+import Foundation
 
 protocol NetworkSession {
     func request<T: Decodable & Sendable>(
-        _ convertible: URLRequestConvertible,
+        _ request: URLRequest,
         as type: T.Type
     ) async throws -> NetworkResponse<T>
 }

@@ -26,10 +26,10 @@ final class AlamofireSession: NetworkSession {
     }
     
     func request<T: Decodable & Sendable>(
-        _ convertible: URLRequestConvertible,
+        _ request: URLRequest,
         as type: T.Type
     ) async throws -> NetworkResponse<T> {
-        let response = await session.request(convertible)
+        let response = await session.request(request)
             .validate()
             .serializingData()
             .response

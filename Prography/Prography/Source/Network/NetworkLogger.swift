@@ -62,37 +62,46 @@ final class NetworkLogger: EventMonitor {
                 
             switch statusCode {
             case 400...499:
-                print("🛰 \(apiName) NETWORK Event LOG\n"
-                      + "❌ Client Error: Bad Request\n"
-                      + "-------------------------------\n"
-                      + "URL: \(request.request?.url?.absoluteString ?? "")\n"
-                      + "Result: \(response.result)\n"
-                      + "StatusCode: \(response.response?.statusCode ?? 0)\n"
-                      + "Data: \(response.data?.toPrettyPrintedString ?? "")\n"
-                      + "Error: \(error.errorDescription ?? "")\n"
+                logError(
+                    label: "Client Error: Bad Request",
+                    request: request,
+                    response: response,
+                    error: error
                 )
             case 500...599:
-                print("🛰 \(apiName) NETWORK Event LOG\n"
-                      + "❌ Server Error: Problem with the server\n"
-                      + "-------------------------------\n"
-                      + "URL: \(request.request?.url?.absoluteString ?? "")\n"
-                      + "Result: \(response.result)\n"
-                      + "StatusCode: \(response.response?.statusCode ?? 0)\n"
-                      + "Data: \(response.data?.toPrettyPrintedString ?? "")\n"
-                      + "Error: \(error.errorDescription ?? "")\n"
+                logError(
+                    label: "Server Error: Problem with the server",
+                    request: request,
+                    response: response,
+                    error: error
                 )
             default:
-                print("🛰 \(apiName) NETWORK Event LOG\n"
-                      + "❌ Unexpected Error: \(error.errorDescription ?? "")\n"
-                      + "-------------------------------\n"
-                      + "URL: \(request.request?.url?.absoluteString ?? "")\n"
-                      + "Result: \(response.result)\n"
-                      + "StatusCode: \(response.response?.statusCode ?? 0)\n"
-                      + "Data: \(response.data?.toPrettyPrintedString ?? "")\n"
+                logError(
+                    label: "Unexpected Error: \(error.errorDescription ?? "")",
+                    request: request,
+                    response: response,
+                    error: error
                 )
             }
         }
         #endif
+    }
+    
+    private func logError(
+        label: String,
+        request: DataRequest,
+        response: DataResponse<some Any, AFError>,
+        error: AFError
+    ) {
+        print("🛰 \(apiName) NETWORK Event LOG\n"
+              + "❌ \(label)\n"
+              + "-------------------------------\n"
+              + "URL: \(request.request?.url?.absoluteString ?? "")\n"
+              + "Result: \(response.result)\n"
+              + "StatusCode: \(response.response?.statusCode ?? 0)\n"
+              + "Data: \(response.data?.toPrettyPrintedString ?? "")\n"
+              + "Error: \(error.errorDescription ?? "")\n"
+        )
     }
 }
 

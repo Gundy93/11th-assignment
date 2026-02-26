@@ -13,7 +13,7 @@ enum AppURL {
     var string: String {
         switch self {
         case .host:
-            "http://localhost:8080/api/v1"
+            "http://localhost:8080"
         }
     }
 

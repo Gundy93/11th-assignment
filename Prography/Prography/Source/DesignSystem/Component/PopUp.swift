@@ -41,7 +41,7 @@ struct PopUp: View {
         .padding(messageEdgeInsets)
     }
     
-    var titleText: some View {
+    private var titleText: some View {
         Text(title)
             .appFont(
                 .p1Bold,

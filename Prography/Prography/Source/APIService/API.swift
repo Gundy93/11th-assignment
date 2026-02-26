@@ -15,36 +15,34 @@ protocol API: URLRequestConvertible {
 }
 
 extension API {
-    func request() throws -> URLRequest {
-        guard let components = URLComponents(string: baseURLString + path),
+    private var urlString: String {
+        let normalizedPath = path.hasPrefix("/") ? path : "/\(path)"
+        
+        return baseURLString + normalizedPath
+    }
+    
+    private func makeURL() throws -> URL {
+        guard let components = URLComponents(string: urlString),
               let url = components.url else {
-            throw NSError(
-                domain: "Invalid URL",
-                code: -1
-            )
+            throw APIError.invalidURL
         }
+        
+        return url
+    }
+}
 
+extension API {
+    func request() throws -> URLRequest {
         return try URLRequest(
-            url: url,
+            url: makeURL(),
             method: method
         )
     }
 
     func request(requestBody: Encodable) throws -> URLRequest {
-        guard let components = URLComponents(string: baseURLString + path),
-              let url = components.url else {
-            throw NSError(
-                domain: "Invalid URL",
-                code: -1
-            )
-        }
-        var request = try URLRequest(
-            url: url,
-            method: method
-        )
-        let parameters = requestBody.toDictionary()
-
-        request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+        var request = try request()
+        
+        request.httpBody = try JSONEncoder().encode(requestBody)
         request.setValue(
             "application/json",
             forHTTPHeaderField: "Content-Type"
@@ -54,41 +52,17 @@ extension API {
     }
 
     func request(queryItems: [URLQueryItem]) throws -> URLRequest {
-        var components = URLComponents(string: baseURLString + path)
-
+        var components = URLComponents(string: urlString)
+        
         components?.queryItems = queryItems
-
+        
         guard let url = components?.url else {
-            throw NSError(
-                domain: "Invalid URL",
-                code: -1
-            )
+            throw APIError.invalidURL
         }
-
+        
         return try URLRequest(
             url: url,
             method: method
         )
-    }
-}
-
-fileprivate extension Encodable {
-    func toDictionary() -> [String: Any] {
-        do {
-            let data = try JSONEncoder().encode(self)
-            let jsonObject = try JSONSerialization.jsonObject(with: data)
-            guard let dictionaryData = jsonObject as? [String: Any] else {
-                #if DEBUG
-                print("Encodable.toDictionary: Failed to cast JSON object to [String: Any] for type \(type(of: self))")
-                #endif
-                return [:]
-            }
-            return dictionaryData
-        } catch {
-            #if DEBUG
-            print("Encodable.toDictionary: Failed to encode type \(type(of: self)) to JSON: \(error)")
-            #endif
-            return [:]
-        }
     }
 }

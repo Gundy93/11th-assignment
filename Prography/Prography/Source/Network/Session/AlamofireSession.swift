@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 
+nonisolated
 final class AlamofireSession: NetworkSession {
     private let session: Session
     
@@ -25,12 +26,14 @@ final class AlamofireSession: NetworkSession {
         )
     }
     
-    func request<T: Decodable & Sendable>(
+    func request<T: Decodable>(
         _ request: URLRequest,
         as type: T.Type
     ) async throws -> NetworkResponse<T> {
         let response = await session.request(request)
-            .validate()
+            .validate { _, _, _ in
+                .success(())
+            }
             .serializingData()
             .response
         let statusCode = response.response?.statusCode

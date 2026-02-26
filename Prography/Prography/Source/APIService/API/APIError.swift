@@ -7,4 +7,5 @@
 
 enum APIError: Error {
     case invalidURL
+    case invalidData
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NetworkSession {
-    func request<T: Decodable & Sendable>(
+    func request<T: Decodable>(
         _ request: URLRequest,
         as type: T.Type
     ) async throws -> NetworkResponse<T>

@@ -12,6 +12,7 @@ enum AppIcon: String {
     case qrCode = "qrcode.viewfinder"
     case schedule = "calendar"
     case attendance = "chart.bar"
+    case close = "xmark"
     
     func image(
         size: CGFloat,

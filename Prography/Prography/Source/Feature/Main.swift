@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 import ComposableArchitecture
 
 enum Tab: CaseIterable {
@@ -17,19 +18,51 @@ enum Tab: CaseIterable {
 struct MainFeature {
     @ObservableState
     struct State: Equatable {
+        @Presents var destination: Destination.State?
+        
         let user: User
         var selectedTab = Tab.schedule
         var schedule = ScheduleFeature.State()
         var attendance = AttendanceFeature.State()
+        var error: ResponseError?
+        var isLoading = false
+        var isAttendancePopUpShowing = false
+        
+        var isErrorPopUpShowing: Bool {
+            get {
+                error != nil
+            }
+            set {
+                if newValue == false {
+                    error = nil
+                }
+            }
+        }
     }
     
     enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case destination(PresentationAction<Destination.Action>)
         case tabSelected(Tab)
         case scanQRCodeButtonTapped
+        case scanAuthorized
         case schedule(ScheduleFeature.Action)
         case attendance(AttendanceFeature.Action)
+        case attendSession(hashValue: String)
+        case attended
+        case attendancePopUpDoneButtonTapped
+        case setError(ResponseError)
+        case errorPopUpDoneButtonTapped
+        case startLoading
+        case endLoading
     }
+    
+    @Reducer
+    enum Destination {
+        case qrScan(QRScanFeature)
+    }
+    
+    @Dependency(\.attendancesService) var attendancesService
     
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -53,11 +86,33 @@ struct MainFeature {
             case .binding:
                 return .none
                 
+            case .destination(.presented(.qrScan(.delegate(.scanned(let hashValue))))):
+                state.destination = nil
+                return .send(.attendSession(hashValue: hashValue))
+                
+            case .destination:
+                return .none
+                
             case .tabSelected(let tab):
                 state.selectedTab = tab
                 return .none
                 
             case .scanQRCodeButtonTapped:
+                switch AVCaptureDevice.authorizationStatus(for: .video) {
+                case .notDetermined:
+                    return .run { send in
+                        if await AVCaptureDevice.requestAccess(for: .video) {
+                            await send(.scanAuthorized)
+                        }
+                    }
+                case .authorized:
+                    return .send(.scanAuthorized)
+                default:
+                    return .none
+                }
+                
+            case .scanAuthorized:
+                state.destination = .qrScan(.init())
                 return .none
                 
             case .schedule:
@@ -65,10 +120,61 @@ struct MainFeature {
                 
             case .attendance:
                 return .none
+                
+            case .attendSession(let hashValue):
+                return .run { [memberId = state.user.id] send in
+                    await send(.startLoading)
+                    
+                    let responseError = try await attendancesService.attend(
+                        hashValue: hashValue,
+                        memberId: memberId
+                    )
+                    
+                    await send(.endLoading)
+                    
+                    if let responseError {
+                        await send(.setError(responseError))
+                    } else {
+                        
+                    }
+                } catch: { error, send in
+                    #if DEBUG
+                    print(error)
+                    #endif
+                    
+                    await send(.endLoading)
+                }
+                
+            case .attended:
+                state.isAttendancePopUpShowing = true
+                return .none
+                
+            case .attendancePopUpDoneButtonTapped:
+                state.isAttendancePopUpShowing = false
+                return .none
+                
+            case .setError(let error):
+                state.error = error
+                return .none
+                
+            case .errorPopUpDoneButtonTapped:
+                state.error = nil
+                return .none
+                
+            case .startLoading:
+                state.isLoading = true
+                return .none
+
+            case .endLoading:
+                state.isLoading = false
+                return .none
             }
         }
+        .ifLet(\.$destination, action: \.destination)
     }
 }
+
+extension MainFeature.Destination.State: Equatable {}
 
 struct MainView: View {
     @Bindable var store: StoreOf<MainFeature>
@@ -79,6 +185,31 @@ struct MainView: View {
             tabBar
         }
         .background(AppColor.white.color)
+        .progressOverlay(visible: store.isLoading)
+        .popUp(
+            isShowing: $store.isAttendancePopUpShowing,
+            title: Texts.attendancePopUpTitle,
+            preferredButtonText: Texts.popUpPreferredButton,
+            onPreferredButtonTapped: {
+                store.send(.attendancePopUpDoneButtonTapped)
+            }
+        )
+        .popUp(
+            isShowing: $store.isErrorPopUpShowing,
+            title: Texts.errorPopUpTitle(store.error),
+            preferredButtonText: Texts.popUpPreferredButton,
+            onPreferredButtonTapped: {
+                store.send(.errorPopUpDoneButtonTapped)
+            }
+        )
+        .fullScreenCover(
+            item: $store.scope(
+                state: \.destination?.qrScan,
+                action: \.destination.qrScan
+            )
+        ) { qrScanStore in
+            QRScanView(store: qrScanStore)
+        }
     }
     
     private var tabView: some View {
@@ -227,6 +358,26 @@ extension MainView {
         
         static let floatingButtonAccessibilityLabel = "QR 코드 스캔"
         static let floatingButtonAccessibilityHint = "QR 코드를 촬영해 출결을 진행합니다"
+        static let attendancePopUpTitle = "출석체크 완료!"
+        
+        static func errorPopUpTitle(_ error: ResponseError?) -> String {
+            switch error {
+            case .qrInvalid:
+                "유효하지 않은 QR 코드입니다."
+            case .qrExpired:
+                "QR 코드가 만료됐습니다."
+            case .sessionNotInProgress:
+                "출석 가능한 일정이 아닙니다."
+            case .attendanceAlreadyChecked:
+                "이미 출석 체크가 완료되었습니다"
+            case .depositInsufficient:
+                "보증금 잔액이 부족합니다."
+            default:
+                "일시적인 오류가 발생했습니다.잠시후 다시 시도해 주세요."
+            }
+        }
+        
+        static let popUpPreferredButton = "확인"
     }
 }
 

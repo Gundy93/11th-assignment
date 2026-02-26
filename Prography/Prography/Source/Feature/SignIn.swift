@@ -31,7 +31,7 @@ struct SignInFeature {
         }
         
         var isSignInButtonDisabled: Bool {
-            id.isEmpty && password.isEmpty
+            id.isEmpty || password.isEmpty
         }
     }
     

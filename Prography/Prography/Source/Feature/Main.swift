@@ -20,6 +20,7 @@ struct MainFeature {
         let user: User
         var selectedTab = Tab.schedule
         var schedule = ScheduleFeature.State()
+        var attendance = AttendanceFeature.State()
     }
     
     enum Action: BindableAction {
@@ -27,6 +28,7 @@ struct MainFeature {
         case tabSelected(Tab)
         case scanQRCodeButtonTapped
         case schedule(ScheduleFeature.Action)
+        case attendance(AttendanceFeature.Action)
     }
     
     var body: some Reducer<State, Action> {
@@ -37,6 +39,13 @@ struct MainFeature {
             action: \.schedule
         ) {
             ScheduleFeature()
+        }
+        
+        Scope(
+            state: \.attendance,
+            action: \.attendance
+        ) {
+            AttendanceFeature()
         }
         
         Reduce { state, action in
@@ -52,6 +61,9 @@ struct MainFeature {
                 return .none
                 
             case .schedule:
+                return .none
+                
+            case .attendance:
                 return .none
             }
         }
@@ -93,7 +105,12 @@ struct MainView: View {
     }
     
     private var attendance: some View {
-        Text("attendance")
+        AttendanceView(
+            store: store.scope(
+                state: \.attendance,
+                action: \.attendance
+            )
+        )
     }
     
     private var tabBar: some View {

@@ -13,9 +13,7 @@ struct SignInFeature {
     @ObservableState
     struct State: Equatable {
         var id = ""
-        var isIdTextFieldFocused = false
         var password = ""
-        var isPasswordTextFieldFocused = false
         var error: ResponseError?
         var isLoading = false
         
@@ -37,9 +35,7 @@ struct SignInFeature {
     
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
-        case outsideTapped
-        case unfocused
-        case submitted(isPasswordTextField: Bool)
+        case submitted
         case signInButtonTapped
         case signIn
         case startLoading
@@ -63,28 +59,15 @@ struct SignInFeature {
             case .binding:
                 return .none
                 
-            case .outsideTapped:
-                return .send(.unfocused)
-                
-            case .unfocused:
-                state.isIdTextFieldFocused = false
-                state.isPasswordTextFieldFocused = false
-                return .none
-                
-            case .submitted(let isPasswordTextField):
-                if isPasswordTextField {
-                    return .send(.signIn)
-                } else {
-                    state.isPasswordTextFieldFocused = true
-                    
+            case .submitted:
+                guard state.isSignInButtonDisabled == false else {
                     return .none
                 }
                 
+                return .send(.signIn)
+                
             case .signInButtonTapped:
-                return .run { send in
-                    await send(.unfocused)
-                    await send(.signIn)
-                }
+                return .send(.signIn)
                 
             case .signIn:
                 return .run { [id = state.id, password = state.password] send in
@@ -136,18 +119,19 @@ struct SignInFeature {
 
 struct SignInView: View {
     @Bindable var store: StoreOf<SignInFeature>
+    @State private var idFieldFocused = false
+    @State private var passwordFieldFocused = false
     
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
             logo
-            Spacer()
             textFields
             signInButton
         }
         .background(AppColor.white.color)
         .onTapGesture {
-            store.send(.outsideTapped)
+            idFieldFocused = false
+            passwordFieldFocused = false
         }
         .progressOverlay(visible: store.isLoading)
         .popUp(
@@ -164,6 +148,7 @@ struct SignInView: View {
         AppImage.logo.image
             .aspectRatio(contentMode: .fit)
             .padding(40)
+            .frame(maxHeight: .infinity)
     }
 
     private var textFields: some View {
@@ -180,29 +165,29 @@ struct SignInView: View {
     private var idTextField: some View {
         AppTextField(
             text: $store.id,
-            isFocused: $store.isIdTextFieldFocused,
+            isFocused: $idFieldFocused,
             title: Texts.idTextFieldTitle,
             placeholder: Texts.idTextFieldPlaceholder,
             hidePlaceholderOnFocus: true
         )
+        .textContentType(.oneTimeCode)
+        .autocorrectionDisabled(true)
         .keyboardType(.asciiCapable)
-        .onSubmit {
-            store.send(.submitted(isPasswordTextField: false))
-        }
     }
 
     private var passwordTextField: some View {
         AppTextField(
             text: $store.password,
-            isFocused: $store.isPasswordTextFieldFocused,
+            isFocused: $passwordFieldFocused,
             title: Texts.passwordTextFieldTitle,
             placeholder: Texts.passwordTextFieldPlaceholder,
             hidePlaceholderOnFocus: true,
             isSecureField: true
         )
+        .textContentType(.oneTimeCode)
         .keyboardType(.asciiCapable)
         .onSubmit {
-            store.send(.submitted(isPasswordTextField: true))
+            store.send(.submitted)
         }
     }
 
@@ -238,7 +223,7 @@ extension SignInView {
 
 // MARK: Types
 extension SignInView {
-    enum Texts {
+    private enum Texts {
         static func errorPopUpTitle(_ error: ResponseError?) -> String {
             switch error {
             case .loginFailed:

@@ -10,8 +10,8 @@ import SwiftUI
 struct PopUp: View {
     let title: String
     let description: String?
-    let preferredButtonText: String?
-    let onPreferredButtonTapped: (() -> Void)?
+    let preferredButtonText: String
+    let onPreferredButtonTapped: (() -> Void)
     let subButtonText: String?
     let onSubButtonTapped: (() -> Void)?
     
@@ -86,16 +86,14 @@ struct PopUp: View {
 
     @ViewBuilder
     private var preferredButton: some View {
-        if let preferredButtonText {
-            Button {
-                onPreferredButtonTapped?()
-            } label: {
-                Text(preferredButtonText)
-                    .appFont(
-                        .p2SemiBold,
-                        appColor: .primary
-                    )
-            }
+        Button {
+            onPreferredButtonTapped()
+        } label: {
+            Text(preferredButtonText)
+                .appFont(
+                    .p2SemiBold,
+                    appColor: .primary
+                )
         }
     }
 }
@@ -126,8 +124,8 @@ extension View {
         isShowing: Binding<Bool>,
         title: String,
         description: String? = nil,
-        preferredButtonText: String? = nil,
-        onPreferredButtonTapped: (() -> Void)? = nil,
+        preferredButtonText: String,
+        onPreferredButtonTapped: @escaping () -> Void,
         subButtonText: String? = nil,
         onSubButtonTapped: (() -> Void)? = nil,
         canDismissWithOutsideTapping: Bool = false

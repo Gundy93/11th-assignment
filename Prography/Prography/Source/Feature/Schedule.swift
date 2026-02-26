@@ -111,6 +111,7 @@ struct ScheduleView: View {
         .task {
             store.send(.viewTaskCalled)
         }
+        .progressOverlay(visible: store.isLoading)
     }
     
     private var informationSection: some View {
@@ -126,11 +127,14 @@ struct ScheduleView: View {
     }
     
     private func sectionHeader(_ text: String) -> some View {
-        Text(text)
-            .appFont(
-                .p2SemiBold,
-                appColor: .black
-            )
+        HStack {
+            Text(text)
+                .appFont(
+                    .p2SemiBold,
+                    appColor: .black
+                )
+            Spacer()
+        }
     }
     
     private var informationContent: some View {
@@ -155,40 +159,32 @@ struct ScheduleView: View {
         )
     }
     
-    @ViewBuilder
     private var date: some View {
-        if let date = store.selectedSession?.date {
-            VStack(spacing: 8) {
-                Text(informationFormatter.string(from: date))
-                    .appFont(
-                        .p2SemiBold,
-                        appColor: .gray70
-                    )
-            }
-        }
+        let isFetched = store.selectedSession != nil
+        
+        return Text(isFetched ? informationFormatter.string(from: store.selectedSession?.date ?? .now) : " ")
+            .appFont(
+                .p2SemiBold,
+                appColor: .gray70
+            )
     }
     
-    @ViewBuilder
     private var title: some View {
-        if let title = store.selectedSession?.title {
-            Text(title)
-                .multilineTextAlignment(.center)
-                .appFont(
-                    .h1Bold,
-                    appColor: .black
-                )
-        }
+        Text(store.selectedSession?.title ?? " ")
+            .multilineTextAlignment(.center)
+            .appFont(
+                .h1Bold,
+                appColor: .black
+            )
+        
     }
     
-    @ViewBuilder
     private var location: some View {
-        if let location = store.selectedSession?.location {
-            Text(location)
-                .appFont(
-                    .p1SemiBold,
-                    appColor: .gray70
-                )
-        }
+        Text(store.selectedSession?.location ?? " ")
+            .appFont(
+                .p1SemiBold,
+                appColor: .gray70
+            )
     }
     
     private var sessionsSection: some View {
@@ -206,6 +202,7 @@ struct ScheduleView: View {
                     )
                 )
             sessions
+            Spacer()
         }
         .background(AppColor.gray10.color)
     }
@@ -213,7 +210,7 @@ struct ScheduleView: View {
     private var sessions: some View {
             ScrollViewReader { scrollProxy in
                 ScrollView {
-                    LazyVStack(spacing: 16){
+                    VStack(spacing: 16){
                         ForEach(store.sessions, id: \.id) { session in
                             Button {
                                 store.send(.sessionTapped(session))

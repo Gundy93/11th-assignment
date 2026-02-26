@@ -33,7 +33,7 @@ struct SignInFeature {
         }
     }
     
-    enum Action: BindableAction, Equatable {
+    enum Action: BindableAction {
         case binding(BindingAction<State>)
         case submitted
         case signInButtonTapped

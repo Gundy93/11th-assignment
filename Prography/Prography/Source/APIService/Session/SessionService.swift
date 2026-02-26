@@ -8,7 +8,7 @@
 import Dependencies
 
 protocol SessionService {
-    func fetchSessions() async throws -> Result<[Session], ResponseError>
+    func fetchSessions() async throws -> Result<[PrographySession], ResponseError>
 }
 
 private enum SessionServiceKey: DependencyKey {
@@ -29,7 +29,7 @@ struct DefaultSessionService: SessionService {
         self.session = session
     }
 
-    func fetchSessions() async throws -> Result<[Session], ResponseError> {
+    func fetchSessions() async throws -> Result<[PrographySession], ResponseError> {
         let api = SessionAPI.sessions
         let response = try await session.request(
             api.asURLRequest(),

@@ -21,7 +21,7 @@ struct SessionDTO: Decodable {
 }
 
 extension SessionResponseDTO {
-    func toDomain() -> [Session] {
+    func toDomain() -> [PrographySession] {
         let formatter = DateFormatter()
         
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -33,7 +33,7 @@ extension SessionResponseDTO {
                 return nil
             }
             
-            return Session(
+            return PrographySession(
                 id: dto.id,
                 title: dto.title ?? "",
                 date: sessionDate,

@@ -1,5 +1,5 @@
 //
-//  Session.swift
+//  PrographySession.swift
 //  Prography
 //
 //  Created by Jun Young Lee on 2/26/26.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Session {
+struct PrographySession: Equatable {
     let id: Int
     let title: String
     let date: Date

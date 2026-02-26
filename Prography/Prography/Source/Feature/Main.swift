@@ -194,7 +194,15 @@ extension MainView {
 #Preview {
     MainView(
         store: Store(
-            initialState: MainFeature.State()
+            initialState: MainFeature.State(
+                user: User(
+                    id: 0,
+                    name: "김철수",
+                    phoneNumber: "010-1234-5678",
+                    status: .active,
+                    role: .member
+                )
+            )
         ) {
             MainFeature()
         }

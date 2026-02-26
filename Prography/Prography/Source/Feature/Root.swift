@@ -5,6 +5,7 @@
 //  Created by Jun Young Lee on 2/26/26.
 //
 
+import SwiftUI
 import ComposableArchitecture
 
 @Reducer
@@ -55,3 +56,33 @@ struct RootFeature {
         }
     }
 }
+
+struct RootView: View {
+    @Bindable var store: StoreOf<RootFeature>
+    
+    var body: some View {
+        if let mainStore = store.scope(
+            state: \.main,
+            action: \.main
+        ) {
+            MainView(store: mainStore)
+        } else {
+            SignInView(
+                store: store.scope(
+                    state: \.signIn,
+                    action: \.signIn
+                )
+            )
+        }
+    }
+}
+
+#if DEBUG
+#Preview {
+    RootView(
+        store: Store(initialState: RootFeature.State()) {
+            RootFeature()
+        }
+    )
+}
+#endif

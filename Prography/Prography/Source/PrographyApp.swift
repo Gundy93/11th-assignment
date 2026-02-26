@@ -12,11 +12,9 @@ import ComposableArchitecture
 struct PrographyApp: App {
     var body: some Scene {
         WindowGroup {
-            SignInView(
-                store: Store(
-                    initialState: SignInFeature.State()
-                ) {
-                    SignInFeature()
+            RootView(
+                store: Store(initialState: RootFeature.State()) {
+                    RootFeature()
                 }
             )
         }

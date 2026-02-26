@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct PrographyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SignInView(
+                store: Store(
+                    initialState: SignInFeature.State()
+                ) {
+                    SignInFeature()
+                }
+            )
         }
     }
 }

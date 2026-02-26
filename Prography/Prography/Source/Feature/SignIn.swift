@@ -5,6 +5,7 @@
 //  Created by Jun Young Lee on 2/26/26.
 //
 
+import SwiftUI
 import ComposableArchitecture
 
 @Reducer
@@ -12,16 +13,35 @@ struct SignInFeature {
     @ObservableState
     struct State: Equatable {
         var id = ""
-        var idTextFieldFocused = false
+        var isIdTextFieldFocused = false
         var password = ""
-        var passwordTextFieldFocused = false
+        var isPasswordTextFieldFocused = false
         var error: ResponseError?
         var isLoading = false
+        
+        var isErrorPopUpShowing: Bool {
+            get {
+                error != nil
+            }
+            set {
+                if newValue == false {
+                    error = nil
+                }
+            }
+        }
+        
+        var isSignInButtonDisabled: Bool {
+            id.isEmpty && password.isEmpty
+        }
     }
     
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
+        case outsideTapped
+        case unfocused
+        case submitted(isPasswordTextField: Bool)
         case signInButtonTapped
+        case signIn
         case startLoading
         case endLoading
         case setError(ResponseError)
@@ -43,7 +63,30 @@ struct SignInFeature {
             case .binding:
                 return .none
                 
+            case .outsideTapped:
+                return .send(.unfocused)
+                
+            case .unfocused:
+                state.isIdTextFieldFocused = false
+                state.isPasswordTextFieldFocused = false
+                return .none
+                
+            case .submitted(let isPasswordTextField):
+                if isPasswordTextField {
+                    return .send(.signIn)
+                } else {
+                    state.isPasswordTextFieldFocused = true
+                    
+                    return .none
+                }
+                
             case .signInButtonTapped:
+                return .run { send in
+                    await send(.unfocused)
+                    await send(.signIn)
+                }
+                
+            case .signIn:
                 return .run { [id = state.id, password = state.password] send in
                     await send(.startLoading)
                     
@@ -90,3 +133,140 @@ struct SignInFeature {
         }
     }
 }
+
+struct SignInView: View {
+    @Bindable var store: StoreOf<SignInFeature>
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer()
+            logo
+            Spacer()
+            textFields
+            signInButton
+        }
+        .background(AppColor.white.color)
+        .onTapGesture {
+            store.send(.outsideTapped)
+        }
+        .progressOverlay(visible: store.isLoading)
+        .popUp(
+            isShowing: $store.isErrorPopUpShowing,
+            title: Texts.errorPopUpTitle(store.error),
+            preferredButtonText: Texts.errorPopUpPreferredButton,
+            onPreferredButtonTapped: {
+                store.send(.errorPopUpDoneButtonTapped)
+            }
+        )
+    }
+
+    private var logo: some View {
+        AppImage.logo.image
+            .aspectRatio(contentMode: .fit)
+            .padding(40)
+    }
+
+    private var textFields: some View {
+        VStack(spacing: 20) {
+            idTextField
+            passwordTextField
+        }
+        .padding(
+            .horizontal,
+            20
+        )
+    }
+
+    private var idTextField: some View {
+        AppTextField(
+            text: $store.id,
+            isFocused: $store.isIdTextFieldFocused,
+            title: Texts.idTextFieldTitle,
+            placeholder: Texts.idTextFieldPlaceholder,
+            hidePlaceholderOnFocus: true
+        )
+        .keyboardType(.asciiCapable)
+        .onSubmit {
+            store.send(.submitted(isPasswordTextField: false))
+        }
+    }
+
+    private var passwordTextField: some View {
+        AppTextField(
+            text: $store.password,
+            isFocused: $store.isPasswordTextFieldFocused,
+            title: Texts.passwordTextFieldTitle,
+            placeholder: Texts.passwordTextFieldPlaceholder,
+            hidePlaceholderOnFocus: true,
+            isSecureField: true
+        )
+        .keyboardType(.asciiCapable)
+        .onSubmit {
+            store.send(.submitted(isPasswordTextField: true))
+        }
+    }
+
+    private var signInButton: some View {
+        Button {
+            store.send(.signInButtonTapped)
+        } label: {
+            Text(Texts.signInButton)
+                .appFont(
+                    .p2Bold,
+                    color: .white
+                )
+                .padding(14)
+                .frame(maxWidth: .infinity)
+                .background {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(signInButtonColor)
+                }
+        }
+        .disabled(store.isSignInButtonDisabled)
+        .padding(20)
+    }
+}
+
+// MARK: UI Properties
+extension SignInView {
+    private var signInButtonColor: Color {
+        let appColor = store.isSignInButtonDisabled ? AppColor.gray30 : AppColor.black
+        
+        return appColor.color
+    }
+}
+
+// MARK: Types
+extension SignInView {
+    enum Texts {
+        static func errorPopUpTitle(_ error: ResponseError?) -> String {
+            switch error {
+            case .loginFailed:
+                "아이디 또는 비밀번호가일치하지 않습니다."
+            case .memberWithdrawn:
+                "탈퇴한 사용자입니다."
+            default:
+                "일시적인 오류가 발생했습니다.\n잠시후 다시 시도해 주세요."
+            }
+        }
+        
+        static let errorPopUpPreferredButton = "확인"
+        static let idTextFieldPlaceholder = "아이디를 입력해 주세요"
+        static let idTextFieldTitle = "아이디"
+        static let passwordTextFieldPlaceholder = "비밀번호를 입력해 주세요"
+        static let passwordTextFieldTitle = "비밀번호"
+        static let signInButton = "로그인"
+    }
+}
+
+#if DEBUG
+#Preview {
+    SignInView(
+        store: Store(
+            initialState: SignInFeature.State()
+        ) {
+            SignInFeature()
+        }
+    )
+}
+#endif

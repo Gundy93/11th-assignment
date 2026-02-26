@@ -31,7 +31,9 @@ final class AlamofireSession: NetworkSession {
         as type: T.Type
     ) async throws -> NetworkResponse<T> {
         let response = await session.request(request)
-            .validate()
+            .validate { _, _, _ in
+                .success(())
+            }
             .serializingData()
             .response
         let statusCode = response.response?.statusCode

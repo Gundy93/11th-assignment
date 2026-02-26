@@ -20,6 +20,7 @@ struct RootFeature {
         case binding(BindingAction<State>)
         case signIn(SignInFeature.Action)
         case main(MainFeature.Action)
+        case signOut
     }
     
     var body: some Reducer<State, Action> {
@@ -45,7 +46,14 @@ struct RootFeature {
             case .signIn:
                 return .none
                 
+            case .main(.attendance(.delegate(.signOut))):
+                return .send(.signOut)
+                
             case .main:
+                return .none
+                
+            case .signOut:
+                state.main = nil
                 return .none
             }
         }

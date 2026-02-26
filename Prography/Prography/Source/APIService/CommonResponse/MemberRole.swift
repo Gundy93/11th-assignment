@@ -8,7 +8,7 @@
 enum MemberRole: String, Decodable, Error {
     case member = "MEMBER"
     case admin = "ADMIN"
-    case undefined
+    case undefined = "UNDEFINED"
     
     init(from decoder: any Decoder) throws {
         let rawValue = try decoder.singleValueContainer().decode(String.self)

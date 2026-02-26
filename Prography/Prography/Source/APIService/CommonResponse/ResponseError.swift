@@ -33,7 +33,7 @@ enum ResponseError: String, Decodable, Error {
     case attendanceAlreadyChecked = "ATTENDANCE_ALREADY_CHECKED"
     case excuseLimitExceeded = "EXCUSE_LIMIT_EXCEEDED"
     case depositInsufficient = "DEPOSIT_INSUFFICIENT"
-    case undefined
+    case undefined = "UNDEFINED"
     
     init(from decoder: any Decoder) throws {
         let rawValue = try decoder.singleValueContainer().decode(String.self)

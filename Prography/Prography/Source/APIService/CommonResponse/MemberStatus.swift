@@ -9,7 +9,7 @@ enum MemberStatus: String, Decodable, Error {
     case active = "ACTIVE"
     case inactive = "INACTIVE"
     case withdrawn = "WITHDRAWN"
-    case undefined
+    case undefined = "UNDEFINED"
     
     init(from decoder: any Decoder) throws {
         let rawValue = try decoder.singleValueContainer().decode(String.self)

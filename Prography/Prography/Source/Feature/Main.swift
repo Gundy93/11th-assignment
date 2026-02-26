@@ -17,6 +17,7 @@ enum Tab: CaseIterable {
 struct MainFeature {
     @ObservableState
     struct State: Equatable {
+        let user: User
         var selectedTab = Tab.schedule
     }
     

@@ -6,7 +6,7 @@
 //
 
 struct SignInResponseDTO: Decodable {
-    let id: Int?
+    let id: Int
     let loginId: String?
     let name: String?
     let phone: String?
@@ -14,4 +14,24 @@ struct SignInResponseDTO: Decodable {
     let role: MemberRole?
     let createdAt: String?
     let updatedAt: String?
+}
+
+extension SignInResponseDTO {
+    func toDomain() -> User {
+        User(
+            id: id,
+            name: name ?? "",
+            phoneNumber: phone ?? "",
+            status: status ?? .undefined,
+            role: role ?? .undefined
+        )
+    }
+}
+
+struct User {
+    let id: Int
+    let name: String
+    let phoneNumber: String
+    let status: MemberStatus
+    let role: MemberRole
 }

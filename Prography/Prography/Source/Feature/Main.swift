@@ -107,21 +107,22 @@ struct MainView: View {
     }
     
     private func tabItem(_ tab: Tab) -> some View {
-        VStack(spacing: 4) {
-            tabItemIcon(tab)
-                .image(
-                    size: 20,
-                    appColor: tabItemIconColor(tab)
-                )
-            tabItemLabel(tab)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(
-            .top,
-            4
-        )
-        .onTapGesture {
+        Button {
             store.send(.tabSelected(tab))
+        } label: {
+            VStack(spacing: 4) {
+                tabItemIcon(tab)
+                    .image(
+                        size: 20,
+                        appColor: tabItemIconColor(tab)
+                    )
+                tabItemLabel(tab)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(
+                .top,
+                4
+            )
         }
     }
 

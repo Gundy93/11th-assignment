@@ -76,11 +76,7 @@ struct AppTextField: View {
     @ViewBuilder
     private var textFieldBlock: some View {
         HStack(spacing: 0) {
-            if isSecureField {
-                secureField
-            } else {
-                textField
-            }
+            textField
             clearButton
         }
         .padding(textFieldBlockEdgeInsets)
@@ -89,46 +85,35 @@ struct AppTextField: View {
         }
     }
     
-    private var secureField: some View {
-        ZStack(alignment: .leading) {
+    private var textField: some View {
+        inputField
+        .textInputAutocapitalization(.never)
+        .focused($focused)
+        .bind(
+            $isFocused,
+            to: $focused
+        )
+        .lineLimit(1)
+        .appFont(
+            .p1Regular,
+            appColor: textColor
+        )
+        .disabled(disabled)
+    }
+    
+    @ViewBuilder
+    private var inputField: some View {
+        if isSecureField {
             SecureField(
                 isPlaceholderHidden ? "" : placeholder,
                 text: $text
             )
-            .textInputAutocapitalization(.never)
-            .focused($focused)
-            .bind(
-                $isFocused,
-                to: $focused
-            )
-            .lineLimit(1)
-            .appFont(
-                .p1Regular,
-                appColor: textColor
-            )
-        }
-        .disabled(disabled)
-    }
-    
-    private var textField: some View {
-        ZStack(alignment: .leading) {
+        } else {
             TextField(
                 isPlaceholderHidden ? "" : placeholder,
                 text: $text
             )
-            .textInputAutocapitalization(.never)
-            .focused($focused)
-            .bind(
-                $isFocused,
-                to: $focused
-            )
-            .lineLimit(1)
-            .appFont(
-                .p1Regular,
-                appColor: textColor
-            )
         }
-        .disabled(disabled)
     }
     
     @ViewBuilder

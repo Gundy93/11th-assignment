@@ -158,6 +158,8 @@ struct MainView: View {
                     )
                 }
         }
+        .accessibilityLabel(Texts.floatingButtonAccessibilityLabel)
+        .accessibilityHint(Texts.floatingButtonAccessibilityHint)
     }
 }
 
@@ -188,6 +190,9 @@ extension MainView {
                 "출결 현황"
             }
         }
+        
+        static let floatingButtonAccessibilityLabel = "QR 코드 스캔"
+        static let floatingButtonAccessibilityHint = "QR 코드를 촬영해 출결을 진행합니다"
     }
 }
 

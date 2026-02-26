@@ -242,11 +242,11 @@ extension SignInView {
         static func errorPopUpTitle(_ error: ResponseError?) -> String {
             switch error {
             case .loginFailed:
-                "아이디 또는 비밀번호가일치하지 않습니다."
+                "아이디 또는 비밀번호가 일치하지 않습니다."
             case .memberWithdrawn:
                 "탈퇴한 사용자입니다."
             default:
-                "일시적인 오류가 발생했습니다.\n잠시후 다시 시도해 주세요."
+                "일시적인 오류가 발생했습니다.잠시후 다시 시도해 주세요."
             }
         }
         

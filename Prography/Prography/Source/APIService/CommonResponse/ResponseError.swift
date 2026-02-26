@@ -1,22 +1,16 @@
 //
-//  Response.swift
+//  ResponseError.swift
 //  Prography
 //
-//  Created by Jun Young Lee on 2/25/26.
+//  Created by Jun Young Lee on 2/26/26.
 //
 
-struct ResponseDTO<T: Decodable>: Decodable {
-    let success: Bool
-    let data: T?
-    let error: ResponseErrorDTO?
-}
-
 struct ResponseErrorDTO: Decodable {
-    let code: String
+    let code: ResponseError
     let message: String?
 }
 
-enum ResponseError: String, Error {
+enum ResponseError: String, Decodable, Error {
     case invalidInput = "INVALID_INPUT"
     case internalError = "INTERNAL_ERROR"
     case loginFailed = "LOGIN_FAILED"
@@ -39,4 +33,11 @@ enum ResponseError: String, Error {
     case attendanceAlreadyChecked = "ATTENDANCE_ALREADY_CHECKED"
     case excuseLimitExceeded = "EXCUSE_LIMIT_EXCEEDED"
     case depositInsufficient = "DEPOSIT_INSUFFICIENT"
+    case undefined
+    
+    init(from decoder: any Decoder) throws {
+        let rawValue = try decoder.singleValueContainer().decode(String.self)
+        
+        self = ResponseError(rawValue: rawValue) ?? .undefined
+    }
 }

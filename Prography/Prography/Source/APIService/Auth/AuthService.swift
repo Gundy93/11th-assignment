@@ -11,7 +11,7 @@ protocol AuthService {
     func signIn(
         id: String,
         password: String
-    ) async throws -> User
+    ) async throws -> Result<User, ResponseError>
 }
 
 private enum AuthServiceKey: DependencyKey {
@@ -35,7 +35,7 @@ struct DefaultAuthService: AuthService {
     func signIn(
         id: String,
         password: String
-    ) async throws -> User {
+    ) async throws -> Result<User, ResponseError> {
         let requestBody = SignInRequest(
             loginId: id,
             password: password
@@ -43,17 +43,21 @@ struct DefaultAuthService: AuthService {
         let api = AuthAPI.signIn(requestBody)
         let response = try await session.request(
             api.asURLRequest(),
-            as: SignInResponseDTO.self
+            as: ResponseDTO<SignInResponseDTO>.self
         )
         
         if let error = response.error {
             throw error
         }
         
-        guard let data = response.data else {
+        if let responseError = response.data?.error {
+            return .failure(responseError.code)
+        }
+        
+        guard let dto = response.data?.data else {
             throw APIError.invalidData
         }
         
-        return data.toDomain()
+        return .success(dto.toDomain())
     }
 }

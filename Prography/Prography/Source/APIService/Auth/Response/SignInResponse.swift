@@ -28,7 +28,7 @@ extension SignInResponseDTO {
     }
 }
 
-struct User {
+struct User: Equatable {
     let id: Int
     let name: String
     let phoneNumber: String

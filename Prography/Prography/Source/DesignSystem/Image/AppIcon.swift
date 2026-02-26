@@ -9,6 +9,9 @@ import SwiftUI
 
 enum AppIcon: String {
     case delete = "xmark.circle.fill"
+    case qrCode = "qrcode.viewfinder"
+    case schedule = "calendar"
+    case attendance = "chart.bar"
     
     func image(
         size: CGFloat,

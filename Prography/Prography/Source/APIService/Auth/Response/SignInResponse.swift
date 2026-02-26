@@ -27,11 +27,3 @@ extension SignInResponseDTO {
         )
     }
 }
-
-struct User: Equatable {
-    let id: Int
-    let name: String
-    let phoneNumber: String
-    let status: MemberStatus
-    let role: MemberRole
-}

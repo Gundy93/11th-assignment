@@ -17,26 +17,26 @@ struct ResponseErrorDTO: Decodable {
 }
 
 enum ResponseError: String, Error {
-    case INVALID_INPUT
-    case INTERNAL_ERROR
-    case LOGIN_FAILED
-    case MEMBER_WITHDRAWN
-    case MEMBER_NOT_FOUND
-    case DUPLICATE_LOGIN_ID
-    case MEMBER_ALREADY_WITHDRAWN
-    case COHORT_NOT_FOUND
-    case PART_NOT_FOUND
-    case TEAM_NOT_FOUND
-    case COHORT_MEMBER_NOT_FOUND
-    case SESSION_NOT_FOUND
-    case SESSION_ALREADY_CANCELLED
-    case SESSION_NOT_IN_PROGRESS
-    case QR_NOT_FOUND
-    case QR_INVALID
-    case QR_EXPIRED
-    case QR_ALREADY_ACTIVE
-    case ATTENDANCE_NOT_FOUND
-    case ATTENDANCE_ALREADY_CHECKED
-    case EXCUSE_LIMIT_EXCEEDED
-    case DEPOSIT_INSUFFICIENT
+    case invalidInput = "INVALID_INPUT"
+    case internalError = "INTERNAL_ERROR"
+    case loginFailed = "LOGIN_FAILED"
+    case memberWithdrawn = "MEMBER_WITHDRAWN"
+    case memberNotFound = "MEMBER_NOT_FOUND"
+    case duplicateLoginId = "DUPLICATE_LOGIN_ID"
+    case memberAlreadyWithdrawn = "MEMBER_ALREADY_WITHDRAWN"
+    case cohortNotFound = "COHORT_NOT_FOUND"
+    case partNotFound = "PART_NOT_FOUND"
+    case teamNotFound = "TEAM_NOT_FOUND"
+    case cohortMemberNotFound = "COHORT_MEMBER_NOT_FOUND"
+    case sessionNotFound = "SESSION_NOT_FOUND"
+    case sessionAlreadyCancelled = "SESSION_ALREADY_CANCELLED"
+    case sessionNotInProgress = "SESSION_NOT_IN_PROGRESS"
+    case qrNotFound = "QR_NOT_FOUND"
+    case qrInvalid = "QR_INVALID"
+    case qrExpired = "QR_EXPIRED"
+    case qrAlreadyActive = "QR_ALREADY_ACTIVE"
+    case attendanceNotFound = "ATTENDANCE_NOT_FOUND"
+    case attendanceAlreadyChecked = "ATTENDANCE_ALREADY_CHECKED"
+    case excuseLimitExceeded = "EXCUSE_LIMIT_EXCEEDED"
+    case depositInsufficient = "DEPOSIT_INSUFFICIENT"
 }

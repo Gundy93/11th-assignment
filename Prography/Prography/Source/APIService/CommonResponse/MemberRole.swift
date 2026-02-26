@@ -5,7 +5,7 @@
 //  Created by Jun Young Lee on 2/26/26.
 //
 
-enum MemberRole: String, Decodable, Error {
+enum MemberRole: String, Decodable {
     case member = "MEMBER"
     case admin = "ADMIN"
     case undefined = "UNDEFINED"

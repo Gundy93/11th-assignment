@@ -5,7 +5,7 @@
 //  Created by Jun Young Lee on 2/26/26.
 //
 
-enum MemberStatus: String, Decodable, Error {
+enum MemberStatus: String, Decodable {
     case active = "ACTIVE"
     case inactive = "INACTIVE"
     case withdrawn = "WITHDRAWN"

@@ -39,6 +39,7 @@ struct RootFeature {
                 
             case .signIn(.delegate(.signInFinished(let user))):
                 state.main = .init(user: user)
+                state.signIn = .init()
                 return .none
                 
             case .signIn:
